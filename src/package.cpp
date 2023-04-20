@@ -197,26 +197,11 @@ uint32_t package_operator::rem(uint32_t goods_id, uint32_t goods_count, slot_id 
         if (pSlot == nullptr) {
             return result;     // !! 中间空格子 !!
         }
-        if (!pSlot->same(goods_id)) {
-            continue;   // 把容器当作辅助使用
-        }
+        
+        auto sub_once = inner_rem(goods_id, goods_count, slot, pSlot);
 
-        backup_slot(slot_id_);
-
-        uint32_t subed = pSlot->sub(goods_count);
-        if (subed > 0 && pSlot->empty()) {
-            _package->add_empty_slot();
-            _package->set_empty_slot_next(slot_id_);
-            _package->rem_goods_slot(goods_id, slot_id_);
-            pSlot->to_empty();
-        }
-
-        if (subed > 0) {
-            _list.emplace_back(operator_info{ slot_id_, package_operator::type::sub, subed, pSlot->_goods, pSlot->_count });
-        }
-
-        goods_count -= subed;
-        result += subed;
+        goods_count -= sub_once;
+        result += sub_once;
 
         if (goods_count == 0) {
             break;
@@ -442,6 +427,8 @@ uint32_t package_operator::inner_rem(uint32_t goods_id, uint32_t goods_count, sl
         return 0;
 
     backup_slot(slot);
+    
+    auto goods_bak = pSlot->_goods;
 
     uint32_t subed = pSlot->sub(goods_count);
     if (subed > 0 && pSlot->empty()) {
@@ -452,7 +439,7 @@ uint32_t package_operator::inner_rem(uint32_t goods_id, uint32_t goods_count, sl
     }
 
     if (subed > 0) {
-        _list.emplace_back(operator_info{ slot, package_operator::type::sub, subed, pSlot->_goods, pSlot->_count });
+        _list.emplace_back(operator_info{ slot, package_operator::type::sub, subed, goods_bak, pSlot->_count });
     }
 
     return subed;
