@@ -265,16 +265,16 @@ bool package_operator::inner_swp(slot_id slot1, slot_id slot2, bool middle_modif
         if (middle_modify) {
             // 处理道具映射 & 更新空格子
             if (!pSlot1->empty()) {
-                _package->add_goods_slot(pSlot1->_goods->id(), slot2);
-            }
-            else {
-                _package->set_empty_slot_next(slot2);
-            }
-            if (!pSlot2->empty()) {
-                _package->add_goods_slot(pSlot2->_goods->id(), slot1);
+                _package->add_goods_slot(pSlot1->_goods->id(), slot1);
             }
             else {
                 _package->set_empty_slot_next(slot1);
+            }
+            if (!pSlot2->empty()) {
+                _package->add_goods_slot(pSlot2->_goods->id(), slot2);
+            }
+            else {
+                _package->set_empty_slot_next(slot2);
             }
         }
         return true;
