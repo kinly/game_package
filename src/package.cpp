@@ -141,11 +141,15 @@ uint32_t package_operator::put(goods_ptr pGoods, uint32_t goods_count, slot_id s
         if (slot == INVALID_SLOT)
             return result;
     }
-    if (slot == INVALID_SLOT) {
-        slot = 0;
-    }
 
     while (goods_count > 0) {
+        if (slot == INVALID_SLOT) {
+            slot = _package->find_slot_existing(pGoods, overlap);
+        }
+        
+        if (slot == INVALID_SLOT) {
+            slot = 0;
+        }
         slot = _package->find_slot(pGoods, slot, overlap);
 
         auto pSlot = _package->get_slot(slot);
